@@ -1,4 +1,4 @@
-import queue, pickle
+import os, sys, queue, pickle
 import pyeq3
 
 import matplotlib # ensure this dependency imports for later use in fitting results
@@ -224,7 +224,9 @@ class InterfaceFrame(tk.Frame):
             pickle.dump(data, pickledEquationFile)
             pickledEquationFile.close()
     
-            # fitting results
+            # view fitting results
+            os.popen(sys.executable + ' FittingResultsViewer.py')
+            
             
             # re-enable fitting buttons
             self.buttonFit_2D.config(state=tk.NORMAL)
