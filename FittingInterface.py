@@ -130,11 +130,11 @@ class InterfaceFrame(tk.Frame):
     
         # ROW 10 - fitting buttons
         row, col = (10, 1)
-        self.buttonFit_2D = tk.Button(self, text="Fit 2D Text Data", command=self.OnFit2D)
+        self.buttonFit_2D = tk.Button(self, text="Fit 2D Text Data", command=self.OnFit_2D)
         self.buttonFit_2D.grid(column=col, row=row)
     
         row, col = (10, 3)
-        self.buttonFit_3D = tk.Button(self, text="Fit 3D Text Data", command=None)
+        self.buttonFit_3D = tk.Button(self, text="Fit 3D Text Data", command=self.OnFit_3D)
         self.buttonFit_3D.grid(column=col, row=row)
 
         # ROW 11 - empty label as visual buffer
@@ -146,7 +146,7 @@ class InterfaceFrame(tk.Frame):
         self.bind('<<status_update>>', self.StatusUpdateHandler)
 
 
-    def OnFit2D(self):
+    def OnFit_2D(self):
         textData = self.text_2D.get("1.0", tk.END)
         equationSelection = dfc.exampleEquationList_2D[self.equationSelect_2D.get()]
         fittingTargetSelection = dfc.fittingTargetList[self.fittingTargetSelect_2D.get()]
@@ -207,6 +207,67 @@ class InterfaceFrame(tk.Frame):
         self.fittingWorkerThread = FittingThread.FittingThread(self, self.equation)
 
 
+    def OnFit_3D(self):
+        textData = self.text_3D.get("1.0", tk.END)
+        equationSelection = dfc.exampleEquationList_3D[self.equationSelect_3D.get()]
+        fittingTargetSelection = dfc.fittingTargetList[self.fittingTargetSelect_3D.get()]
+        
+        # the GUI's fitting target string contains what we need - extract it
+        fittingTarget = fittingTargetSelection.split('(')[1].split(')')[0]
+
+        if equationSelection == 'Linear Polynomial':
+            self.equation = pyeq3.Models_3D.Polynomial.Linear(fittingTarget)
+        if equationSelection == 'Full Quadratic Polynomial':
+            self.equation = pyeq3.Models_3D.Polynomial.FullQuadratic(fittingTarget)
+        if equationSelection == 'Full Cubic Polynomial':
+            self.equation = pyeq3.Models_3D.Polynomial.FullCubic(fittingTarget)
+        if equationSelection == 'Monkey Saddle A':
+            self.equation = pyeq3.Models_3D.Miscellaneous.MonkeySaddleA(fittingTarget)
+        if equationSelection == 'Gaussian Curvature Of Whitneys Umbrella A':
+            self.equation = pyeq3.Models_3D.Miscellaneous.GaussianCurvatureOfWhitneysUmbrellaA(fittingTarget)
+        if equationSelection == 'NIST Nelson Autolog':
+            self.equation = pyeq3.Models_3D.NIST.NIST_NelsonAutolog(fittingTarget)
+        if equationSelection == 'Custom Polynomial One':
+            self.equation = pyeq3.Models_3D.Polynomial.UserSelectablePolynomial(fittingTarget, "Default", 3, 1)
+
+        # convert text to numeric data checking for log of negative numbers, etc.
+        try:
+            pyeq3.dataConvertorService().ConvertAndSortColumnarASCII(textData, self.equation, False)
+        except:
+            tk_mbox.showerror("Error", self.equation.reasonWhyDataRejected)
+            return
+
+        # check for number of coefficients > number of data points to be fitted
+        coeffCount = len(self.equation.GetCoefficientDesignators())
+        dataCount = len(self.equation.dataCache.allDataCacheDictionary['DependentData'])
+        if coeffCount > dataCount:
+            tk_mbox.showerror("Error", "This equation requires a minimum of " + str(coeffCount) + " data points, you have supplied " + repr(dataCount) + ".")
+            return
+        
+        # Now the status dialog is used. Disable fitting buttons until thread completes
+        self.buttonFit_2D.config(state=tk.DISABLED)
+        self.buttonFit_3D.config(state=tk.DISABLED)
+        
+        # create simple topl-level text dialog to display status as fitting progresses
+        # when the fitting thread completes, it will close the status box
+        self.statusBox = tk.Toplevel()
+        self.statusBox.title("Fitting Status")
+        self.statusBox.text = tk.Text(self.statusBox)
+        self.statusBox.text.pack()
+        
+        # in tkinter the status box must be manually centered
+        self.statusBox.update_idletasks()
+        width = self.statusBox.winfo_width()
+        height = self.statusBox.winfo_height()
+        x = (self.statusBox.winfo_screenwidth() // 2) - (width // 2) # integer division
+        y = (self.statusBox.winfo_screenheight() // 2) - (height // 2) # integer division
+        self.statusBox.geometry('{}x{}+{}+{}'.format(width, height, x, y))        
+
+        # thread will automatically start to run
+        # "status update" handler will re-enable buttons
+        self.fittingWorkerThread = FittingThread.FittingThread(self, self.equation)
+
+
     # When "status_update" event is generated, get
     # text data from queue and display it to the user.
     # If the queue data is not text, it is the fitted equation.
@@ -216,15 +277,14 @@ class InterfaceFrame(tk.Frame):
         if type(data) == type(''): # text is used for status box display to user
             self.statusBox.text.insert(tk.END, data + '\n')
         else: # the queue data is now the fitted equation.
-            # write the fitted equation to a pickle file and use a
-            # separate process to display the fitting results.  This
-            # allows multiple result windows to open for comparisons
-            # and allows the possibility of archiving the fitted equations
+            # write the fitted equation to a pickle file.  This
+            # allows the possibility of archiving the fitted equations
             pickledEquationFile = open("pickledEquationFile", "wb")
             pickle.dump(data, pickledEquationFile)
             pickledEquationFile.close()
     
             # view fitting results
+            # allow multiple result windows to open for comparisons
             os.popen(sys.executable + ' FittingResultsViewer.py')
             
             
