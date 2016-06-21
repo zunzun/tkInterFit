@@ -4,7 +4,7 @@ using tkinter and the pyeq3 fitting library.
 see http://commonproblems.readthedocs.io/en/latest/
 
 
-Step 1: Install Python 3, scipy and matplotlib
+Step 1: Install Python 3, tk, scipy and matplotlib
 
 On Debian or Ubuntu Linux, you can use this command:
 
