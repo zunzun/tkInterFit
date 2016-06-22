@@ -1,7 +1,11 @@
 import pickle
 import pyeq3
-import matplotlib
 import numpy, scipy
+
+import matplotlib
+matplotlib.use('TkAgg')
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 
 import tkinter as tk
 from tkinter import ttk as ttk
@@ -9,8 +13,11 @@ from tkinter import messagebox as tk_mbox
 import tkinter.scrolledtext as tk_stxt
 
 
-textboxWidth = 60
-textboxHeight = 12
+textboxWidth = 60 # units are characters
+textboxHeight = 12 # units are characters
+
+graphWidth = 800 # units are pixels
+graphHeight = 600 # units are pixels
 
 # this is used in several reports
 def DataArrayStatisticsReport(parent, titleString, tempdata):
@@ -167,4 +174,47 @@ def SourceCodeReport(parent, equation, lanuageNameString):
     scrolledText.insert(tk.END, code)
     
     return scrolledText
+
+
+def AbsoluteErrorGraph(parent, equation):
+    f = Figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    axes = f.add_subplot(111)
+    dep_data = equation.dataCache.allDataCacheDictionary['DependentData']
+    abs_error = equation.modelAbsoluteError
+    axes.plot(dep_data, abs_error, 'D')
     
+    if equation.GetDimensionality() == 2: # used for labels only
+        axes.set_title('Absolute Error vs. X Data')
+        axes.set_xlabel('X Data')
+    else:
+        axes.set_title('Absolute Error vs. Z Data')
+        axes.set_xlabel('Z Data')
+        
+    axes.set_ylabel(" Absolute Error") # Y axis label is always absolute error
+
+    # a tk.DrawingArea
+    canvas = FigureCanvasTkAgg(f, master=parent)
+    canvas.show()
+    return canvas.get_tk_widget()
+
+
+def PercentErrorGraph(parent, equation):
+    f = Figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    axes = f.add_subplot(111)
+    dep_data = equation.dataCache.allDataCacheDictionary['DependentData']
+    per_error = equation.modelPercentError
+    axes.plot(dep_data, per_error, 'D')
+    
+    if equation.GetDimensionality() == 2: # used for labels only
+        axes.set_title('Percent Error vs. X Data')
+        axes.set_xlabel('X Data')
+    else:
+        axes.set_title('Percent Error vs. Z Data')
+        axes.set_xlabel('Z Data')
+        
+    axes.set_ylabel(" Percent Error") # Y axis label is always percent error
+
+    # a tk.DrawingArea
+    canvas = FigureCanvasTkAgg(f, master=parent)
+    canvas.show()
+    return canvas.get_tk_widget()

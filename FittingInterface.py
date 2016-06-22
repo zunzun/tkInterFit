@@ -1,4 +1,4 @@
-import os, sys, queue, pickle
+import os, sys, queue, pickle, time
 import pyeq3
 
 import matplotlib # ensure this dependency imports for later use in fitting results
@@ -292,7 +292,7 @@ class InterfaceFrame(tk.Frame):
             self.buttonFit_2D.config(state=tk.NORMAL)
             self.buttonFit_3D.config(state=tk.NORMAL)
             
-            # destroy the now unused status box
+            # destroy the now-unused status box
             self.statusBox.destroy()
             
 

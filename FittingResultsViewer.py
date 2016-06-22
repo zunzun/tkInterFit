@@ -1,6 +1,5 @@
 import pickle
 import pyeq3
-import matplotlib
 
 import tkinter as tk
 from tkinter import ttk as ttk
@@ -23,7 +22,20 @@ class ResultsFrame(tk.Frame):
         topLevelNotebook = ttk.Notebook(self)
         topLevelNotebook.pack()
 
-    # the "text reports" notebook tab
+        # the "graph reports" notebook tab
+        nbGraphReports = ttk.Notebook(topLevelNotebook)
+        nbGraphReports.pack()
+        topLevelNotebook.add(nbGraphReports, text='Graph Reports')
+
+        report = IndividualReports.AbsoluteErrorGraph(nbGraphReports, equation)
+        nbGraphReports.add(report, text="Absolute Error")
+
+        if equation.dataCache.DependentDataContainsZeroFlag != 1:
+            report = IndividualReports.PercentErrorGraph(nbGraphReports, equation)
+            nbGraphReports.add(report, text="Percent Error")
+
+
+        # the "text reports" notebook tab
         nbTextReports = ttk.Notebook(topLevelNotebook)
         nbTextReports.pack()
         topLevelNotebook.add(nbTextReports, text='Text Reports')
@@ -85,13 +97,11 @@ if __name__ == "__main__":
     root.title("Example tkinterFit -  Fitting Results Viewer")
     
     # manually center the application window on the user display
-    #root.update_idletasks()
-    #width = root.winfo_width()
-    #height = root.winfo_height()
-    #x = (root.winfo_screenwidth() // 2) - (width // 2) # integer division
-    #y = (root.winfo_screenheight() // 2) - (height // 2) # integer division
-    #root.geometry('{}x{}+{}+{}'.format(width, height, x, y))        
-    root.minsize(width=666, height=666)
-    root.maxsize(width=666, height=666)    
+    root.update_idletasks()
+    width = root.winfo_width()
+    height = root.winfo_height()
+    x = (root.winfo_screenwidth() // 2) - (width // 2) # integer division
+    y = (root.winfo_screenheight() // 2) - (height // 2) # integer division
+    root.geometry('{}x{}+{}+{}'.format(width, height, x, y))        
         
     root.mainloop()
