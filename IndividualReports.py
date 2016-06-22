@@ -1,6 +1,7 @@
 import pickle
 import pyeq3
 import matplotlib
+import numpy, scipy
 
 import tkinter as tk
 from tkinter import ttk as ttk
@@ -8,6 +9,70 @@ from tkinter import messagebox as tk_mbox
 import tkinter.scrolledtext as tk_stxt
 
 
+textboxWidth = 60
+textboxHeight = 12
+
+# this is used in several reports
+def DataArrayStatisticsReport(parent, titleString, tempdata):
+    scrolledText = tk_stxt.ScrolledText(parent, width=textboxWidth, height=textboxHeight, wrap=tk.NONE)
+    scrolledText.insert(tk.END, titleString + '\n\n')
+    
+    # must at least have max and min
+    minData = min(tempdata)
+    maxData = max(tempdata)
+    
+    if maxData == minData:
+        scrolledText.insert(tk.END, 'All data has the same value,\n')
+        scrolledText.insert(tk.END, "value = %-.16E\n" % (minData))
+        scrolledText.insert(tk.END, 'statistics cannot be calculated.')
+    else:
+        scrolledText.insert(tk.END, "max = %-.16E\n" % (maxData))
+        scrolledText.insert(tk.END, "min = %-.16E\n" % (minData))
+        
+        try:
+            temp = scipy.mean(tempdata)
+            scrolledText.insert(tk.END, "mean = %-.16E\n" % (temp))
+        except:
+            scrolledText.insert(tk.END, "mean gave error in calculation\n")
+
+        try:
+            temp = scipy.stats.sem(tempdata)
+            scrolledText.insert(tk.END, "standard error of mean = %-.16E\n" % (temp))
+        except:
+            scrolledText.insert(tk.END, "standard error of mean gave error in calculation\n")
+
+        try:
+            temp = scipy.median(tempdata)
+            scrolledText.insert(tk.END, "median = %-.16E\n" % (temp))
+        except:
+            scrolledText.insert(tk.END, "median gave error in calculation\n")
+
+        try:
+            temp = scipy.var(tempdata)
+            scrolledText.insert(tk.END, "variance = %-.16E\n" % (temp))
+        except:
+            scrolledText.insert(tk.END, "variance gave error in calculation\n")
+
+        try:
+            temp = scipy.std(tempdata)
+            scrolledText.insert(tk.END, "std. deviation = %-.16E\n" % (temp))
+        except:
+            scrolledText.insert(tk.END, "std. deviation gave error in calculation\n")
+
+        try:
+            temp = scipy.stats.skew(tempdata)
+            scrolledText.insert(tk.END, "skew = %-.16E\n" % (temp))
+        except:
+            scrolledText.insert(tk.END, "skew gave error in calculation\n")
+
+        try:
+            temp = scipy.stats.kurtosis(tempdata)
+            scrolledText.insert(tk.END, "kurtosis = %-.16E\n" % (temp))
+        except:
+            scrolledText.insert(tk.END, "kurtosis gave error in calculation\n")
+            
+    return scrolledText
+    
 
 def CoefficientAndFitStatistics(parent, equation):
     scrolledText = tk_stxt.ScrolledText(parent, width=80, height=25, wrap=tk.NONE)
@@ -88,7 +153,7 @@ def CoefficientAndFitStatistics(parent, equation):
 
 
 def CoefficientListing(parent, equation):
-    scrolledText = tk_stxt.ScrolledText(parent, width=60, height=12, wrap=tk.NONE)
+    scrolledText = tk_stxt.ScrolledText(parent, width=textboxWidth, height=textboxHeight, wrap=tk.NONE)
     cd = equation.GetCoefficientDesignators()
     for i in range(len(equation.solvedCoefficients)):
         scrolledText.insert(tk.END, "%s = %-.16E\n" % (cd[i], equation.solvedCoefficients[i]))
@@ -96,11 +161,10 @@ def CoefficientListing(parent, equation):
     return scrolledText
 
 
-def AbsoluteErrorListing(parent, equation):
-    scrolledText = tk_stxt.ScrolledText(parent, width=60, height=12, wrap=tk.NONE)
-    cd = equation.GetCoefficientDesignators()
-    for i in range(len(equation.solvedCoefficients)):
-        scrolledText.insert(tk.END, "%s = %-.16E\n" % (cd[i], equation.solvedCoefficients[i]))
-
+def SourceCodeReport(parent, equation, lanuageNameString):
+    scrolledText = tk_stxt.ScrolledText(parent, width=textboxWidth, height=textboxHeight, wrap=tk.NONE)    
+    code = eval('pyeq3.outputSourceCodeService().GetOutputSourceCode' + lanuageNameString + '(equation)')
+    scrolledText.insert(tk.END, code)
+    
     return scrolledText
     

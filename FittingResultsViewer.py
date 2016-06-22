@@ -23,6 +23,7 @@ class ResultsFrame(tk.Frame):
         topLevelNotebook = ttk.Notebook(self)
         topLevelNotebook.pack()
 
+    # the "text reports" notebook tab
         nbTextReports = ttk.Notebook(topLevelNotebook)
         nbTextReports.pack()
         topLevelNotebook.add(nbTextReports, text='Text Reports')
@@ -32,6 +33,48 @@ class ResultsFrame(tk.Frame):
         
         report = IndividualReports.CoefficientListing(nbTextReports, equation)
         nbTextReports.add(report, text="Coefficient Listing")
+
+        report = IndividualReports.DataArrayStatisticsReport(nbTextReports, 'Absolute Error Statistics', equation.modelAbsoluteError)
+        nbTextReports.add(report, text="Absolute Error Statistics")
+        
+        if equation.dataCache.DependentDataContainsZeroFlag != 1:
+            report = IndividualReports.DataArrayStatisticsReport(nbTextReports, 'Percent Error Statistics', equation.modelPercentError)
+            nbTextReports.add(report, text="Percent Error Statistics")
+
+        # the "source code" notebook tab
+        nbSourceCodeReports = ttk.Notebook(topLevelNotebook)
+        nbSourceCodeReports.pack()
+        topLevelNotebook.add(nbSourceCodeReports, text='Source Code')
+                    
+        report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation, 'CPP')
+        nbSourceCodeReports.add(report, text="C++")
+    
+        report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation,'CSHARP')
+        nbSourceCodeReports.add(report, text="CSHARP")
+    
+        report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation,'VBA')
+        nbSourceCodeReports.add(report, text="VBA")
+    
+        report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation,'PYTHON')
+        nbSourceCodeReports.add(report, text="PYTHON")
+    
+        report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation,'JAVA')
+        nbSourceCodeReports.add(report, text="JAVA")
+    
+        report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation,'JAVASCRIPT')
+        nbSourceCodeReports.add(report, text="JAVASCRIPT")
+    
+        report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation,'JULIA')
+        nbSourceCodeReports.add(report, text="JULIA")
+    
+        report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation,'SCILAB')
+        nbSourceCodeReports.add(report, text="SCILAB")
+    
+        report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation,'MATLAB')
+        nbSourceCodeReports.add(report, text="MATLAB")
+    
+        report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation,'FORTRAN90')
+        nbSourceCodeReports.add(report, text="FORTRAN90")
 
 
 
