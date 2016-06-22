@@ -30,9 +30,15 @@ class ResultsFrame(tk.Frame):
         report = IndividualReports.AbsoluteErrorGraph(nbGraphReports, equation)
         nbGraphReports.add(report, text="Absolute Error")
 
+        report = IndividualReports.AbsoluteErrorHistogram(nbGraphReports, equation)
+        nbGraphReports.add(report, text="Absolute Error Histogram")
+
         if equation.dataCache.DependentDataContainsZeroFlag != 1:
             report = IndividualReports.PercentErrorGraph(nbGraphReports, equation)
             nbGraphReports.add(report, text="Percent Error")
+
+            report = IndividualReports.PercentErrorHistogram(nbGraphReports, equation)
+            nbGraphReports.add(report, text="Percent Error Histogram")
 
 
         # the "text reports" notebook tab

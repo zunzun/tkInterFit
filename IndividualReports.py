@@ -218,3 +218,56 @@ def PercentErrorGraph(parent, equation):
     canvas = FigureCanvasTkAgg(f, master=parent)
     canvas.show()
     return canvas.get_tk_widget()
+
+
+def AbsoluteErrorHistogram(parent, equation):
+    f = Figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    axes = f.add_subplot(111)
+    abs_error = equation.modelAbsoluteError
+    bincount = len(abs_error)//2 # integer division
+    if bincount < 5:
+        bincount = 5
+    if bincount > 25:
+        bincount = 25
+    n, bins, patches = axes.hist(abs_error, bincount, rwidth=0.8)
+    
+    # some axis space at the top of the graph
+    ylim = axes.get_ylim()
+    if ylim[1] == max(n):
+        axes.set_ylim(0.0, ylim[1] + 1)
+
+    axes.set_title('Absolute Error Histogram') # add a title
+    axes.set_xlabel('Absolute Error') # X axis data label
+    axes.set_ylabel(" Frequency") # Y axis label is frequency
+
+    # a tk.DrawingArea
+    canvas = FigureCanvasTkAgg(f, master=parent)
+    canvas.show()
+    return canvas.get_tk_widget()
+
+
+def PercentErrorHistogram(parent, equation):
+    f = Figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    axes = f.add_subplot(111)
+    per_error = equation.modelPercentError
+    bincount = len(per_error)//2 # integer division
+    if bincount < 5:
+        bincount = 5
+    if bincount > 25:
+        bincount = 25
+    n, bins, patches = axes.hist(per_error, bincount, rwidth=0.8)
+    
+    # some axis space at the top of the graph
+    ylim = axes.get_ylim()
+    if ylim[1] == max(n):
+        axes.set_ylim(0.0, ylim[1] + 1)
+
+    axes.set_title('Percent Error Histogram') # add a title
+    axes.set_xlabel('Percent Error') # X axis data label
+    axes.set_ylabel(" Frequency") # Y axis label is frequency
+
+    # a tk.DrawingArea
+    canvas = FigureCanvasTkAgg(f, master=parent)
+    canvas.show()
+    return canvas.get_tk_widget()
+
