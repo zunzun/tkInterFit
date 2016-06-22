@@ -27,6 +27,9 @@ class ResultsFrame(tk.Frame):
         nbGraphReports.pack()
         topLevelNotebook.add(nbGraphReports, text='Graph Reports')
 
+        report = IndividualReports.ModelScatterConfidenceGraph(nbGraphReports, equation)
+        nbGraphReports.add(report, text="Model With 95%Confidence")
+
         report = IndividualReports.AbsoluteErrorGraph(nbGraphReports, equation)
         nbGraphReports.add(report, text="Absolute Error")
 
