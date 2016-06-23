@@ -5,7 +5,6 @@ import numpy, scipy
 import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-#from matplotlib.figure import Figure
 
 from mpl_toolkits.mplot3d import  Axes3D
 from matplotlib import cm # to colormap 3D surfaces from blue to red
