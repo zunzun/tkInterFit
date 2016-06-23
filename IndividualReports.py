@@ -331,7 +331,6 @@ def ModelScatterConfidenceGraph(parent, equation):
 
 
 def SurfacePlot(parent, equation):
-    # this is different that the 2D graphs
     f = plt.figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
     canvas = FigureCanvasTkAgg(f, master=parent)
     
@@ -393,6 +392,27 @@ def ContourPlot(parent, equation):
     
     CS = matplotlib.pyplot.contour(X, Y, Z, numberOfContourLines, colors='k')
     matplotlib.pyplot.clabel(CS, inline=1, fontsize=10) # labels for contours
+
+    canvas.show()
+    return canvas.get_tk_widget()
+
+
+def ScatterPlot(parent, equation):
+    f = plt.figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    canvas = FigureCanvasTkAgg(f, master=parent)
+    
+    matplotlib.pyplot.grid(True)
+    axes = Axes3D(f)
+    x_data = equation.dataCache.allDataCacheDictionary['IndependentData'][0]
+    y_data = equation.dataCache.allDataCacheDictionary['IndependentData'][1]
+    z_data = equation.dataCache.allDataCacheDictionary['DependentData']
+            
+    axes.scatter(x_data, y_data, z_data)
+
+    axes.set_title('Scatter Plot (click-drag with mouse)')
+    axes.set_xlabel('X Data')
+    axes.set_ylabel('Y Data')
+    axes.set_zlabel('Z Data')
 
     canvas.show()
     return canvas.get_tk_widget()

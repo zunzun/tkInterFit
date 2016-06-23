@@ -36,6 +36,9 @@ class ResultsFrame(tk.Frame):
             
             report = IndividualReports.ContourPlot(nbGraphReports, equation)
             nbGraphReports.add(report, text="Contour Plot")
+            
+            report = IndividualReports.ScatterPlot(nbGraphReports, equation)
+            nbGraphReports.add(report, text="Scatter Plot")
 
         report = IndividualReports.AbsoluteErrorGraph(nbGraphReports, equation)
         nbGraphReports.add(report, text="Absolute Error")
