@@ -322,7 +322,7 @@ def ModelScatterConfidenceGraph(parent, equation):
     axes.plot(xModel[booleanMask], lower[booleanMask], linestyle='dashed', color='blue')
     axes.plot(xModel[booleanMask], upper[booleanMask], linestyle='dashed', color='blue')
 
-    axes.set_title('Model With 95% Confidence Limits') # add a title
+    axes.set_title('Model With 95% Confidence Intervals') # add a title
     axes.set_xlabel('X Data') # X axis data label
     axes.set_ylabel('Y Data') # Y axis data label
 
