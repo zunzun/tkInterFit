@@ -27,8 +27,15 @@ class ResultsFrame(tk.Frame):
         nbGraphReports.pack()
         topLevelNotebook.add(nbGraphReports, text='Graph Reports')
 
-        report = IndividualReports.ModelScatterConfidenceGraph(nbGraphReports, equation)
-        nbGraphReports.add(report, text="Model With 95%Confidence")
+        if equation.GetDimensionality() == 2:
+            report = IndividualReports.ModelScatterConfidenceGraph(nbGraphReports, equation)
+            nbGraphReports.add(report, text="Model With 95%Confidence")
+        else:
+            report = IndividualReports.SurfacePlot(nbGraphReports, equation)
+            nbGraphReports.add(report, text="Surface Plot")
+            
+            report = IndividualReports.ContourPlot(nbGraphReports, equation)
+            nbGraphReports.add(report, text="Contour Plot")
 
         report = IndividualReports.AbsoluteErrorGraph(nbGraphReports, equation)
         nbGraphReports.add(report, text="Absolute Error")

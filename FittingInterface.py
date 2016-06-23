@@ -287,11 +287,13 @@ class InterfaceFrame(tk.Frame):
             # allow multiple result windows to open for comparisons
             os.popen(sys.executable + ' FittingResultsViewer.py')
             
-            
+            # give the system a few seconds to start the reporting application
+            time.sleep(5.0)
+
             # re-enable fitting buttons
             self.buttonFit_2D.config(state=tk.NORMAL)
             self.buttonFit_3D.config(state=tk.NORMAL)
-            
+        
             # destroy the now-unused status box
             self.statusBox.destroy()
             

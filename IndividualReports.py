@@ -5,7 +5,11 @@ import numpy, scipy
 import matplotlib
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
+#from matplotlib.figure import Figure
+
+from mpl_toolkits.mplot3d import  Axes3D
+from matplotlib import cm # to colormap 3D surfaces from blue to red
+import matplotlib.pyplot as plt
 
 import tkinter as tk
 from tkinter import ttk as ttk
@@ -18,6 +22,9 @@ textboxHeight = 12 # units are characters
 
 graphWidth = 800 # units are pixels
 graphHeight = 600 # units are pixels
+
+# 3D contour plot lines
+numberOfContourLines = 16
 
 # this is used in several reports
 def DataArrayStatisticsReport(parent, titleString, tempdata):
@@ -177,7 +184,8 @@ def SourceCodeReport(parent, equation, lanuageNameString):
 
 
 def AbsoluteErrorGraph(parent, equation):
-    f = Figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    f = plt.figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    canvas = FigureCanvasTkAgg(f, master=parent)
     axes = f.add_subplot(111)
     dep_data = equation.dataCache.allDataCacheDictionary['DependentData']
     abs_error = equation.modelAbsoluteError
@@ -192,14 +200,13 @@ def AbsoluteErrorGraph(parent, equation):
         
     axes.set_ylabel(" Absolute Error") # Y axis label is always absolute error
 
-    # a tk.DrawingArea
-    canvas = FigureCanvasTkAgg(f, master=parent)
     canvas.show()
     return canvas.get_tk_widget()
 
 
 def PercentErrorGraph(parent, equation):
-    f = Figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    f = plt.figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    canvas = FigureCanvasTkAgg(f, master=parent)
     axes = f.add_subplot(111)
     dep_data = equation.dataCache.allDataCacheDictionary['DependentData']
     per_error = equation.modelPercentError
@@ -214,14 +221,13 @@ def PercentErrorGraph(parent, equation):
         
     axes.set_ylabel(" Percent Error") # Y axis label is always percent error
 
-    # a tk.DrawingArea
-    canvas = FigureCanvasTkAgg(f, master=parent)
     canvas.show()
     return canvas.get_tk_widget()
 
 
 def AbsoluteErrorHistogram(parent, equation):
-    f = Figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    f = plt.figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    canvas = FigureCanvasTkAgg(f, master=parent)
     axes = f.add_subplot(111)
     abs_error = equation.modelAbsoluteError
     bincount = len(abs_error)//2 # integer division
@@ -240,14 +246,13 @@ def AbsoluteErrorHistogram(parent, equation):
     axes.set_xlabel('Absolute Error') # X axis data label
     axes.set_ylabel(" Frequency") # Y axis label is frequency
 
-    # a tk.DrawingArea
-    canvas = FigureCanvasTkAgg(f, master=parent)
     canvas.show()
     return canvas.get_tk_widget()
 
 
 def PercentErrorHistogram(parent, equation):
-    f = Figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    f = plt.figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    canvas = FigureCanvasTkAgg(f, master=parent)
     axes = f.add_subplot(111)
     per_error = equation.modelPercentError
     bincount = len(per_error)//2 # integer division
@@ -266,14 +271,13 @@ def PercentErrorHistogram(parent, equation):
     axes.set_xlabel('Percent Error') # X axis data label
     axes.set_ylabel(" Frequency") # Y axis label is frequency
 
-    # a tk.DrawingArea
-    canvas = FigureCanvasTkAgg(f, master=parent)
     canvas.show()
     return canvas.get_tk_widget()
 
 
 def ModelScatterConfidenceGraph(parent, equation):
-    f = Figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    f = plt.figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    canvas = FigureCanvasTkAgg(f, master=parent)
     axes = f.add_subplot(111)
     y_data = equation.dataCache.allDataCacheDictionary['DependentData']
     x_data = equation.dataCache.allDataCacheDictionary['IndependentData'][0]
@@ -323,7 +327,73 @@ def ModelScatterConfidenceGraph(parent, equation):
     axes.set_xlabel('X Data') # X axis data label
     axes.set_ylabel('Y Data') # Y axis data label
 
-    # a tk.DrawingArea
+    canvas.show()
+    return canvas.get_tk_widget()
+
+
+def SurfacePlot(parent, equation):
+    # this is different that the 2D graphs
+    f = plt.figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
     canvas = FigureCanvasTkAgg(f, master=parent)
+    
+    matplotlib.pyplot.grid(True)
+    axes = Axes3D(f)
+    x_data = equation.dataCache.allDataCacheDictionary['IndependentData'][0]
+    y_data = equation.dataCache.allDataCacheDictionary['IndependentData'][1]
+    z_data = equation.dataCache.allDataCacheDictionary['DependentData']
+            
+    xModel = numpy.linspace(min(x_data), max(x_data), 20)
+    yModel = numpy.linspace(min(y_data), max(y_data), 20)
+    X, Y = numpy.meshgrid(xModel, yModel)
+
+    tempcache = equation.dataCache # store the data cache
+    equation.dataCache = pyeq3.dataCache()
+    equation.dataCache.allDataCacheDictionary['IndependentData'] = numpy.array([X, Y])
+    equation.dataCache.FindOrCreateAllDataCache(equation)
+    Z = equation.CalculateModelPredictions(equation.solvedCoefficients, equation.dataCache.allDataCacheDictionary)
+    equation.dataCache = tempcache# restore the original data cache
+
+    axes.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm, linewidth=1, antialiased=True)
+
+    axes.scatter(x_data, y_data, z_data)
+
+    axes.set_title('Surface Plot (click-drag with mouse)') # add a title for surface plot
+    axes.set_xlabel('X Data') # X axis data label
+    axes.set_ylabel('Y Data') # Y axis data label
+    axes.set_zlabel('Z Data') # Z axis data label
+
+    canvas.show()
+    return canvas.get_tk_widget()
+
+
+def ContourPlot(parent, equation):
+    f = plt.figure(figsize=(graphWidth/100.0, graphHeight/100.0), dpi=100)
+    canvas = FigureCanvasTkAgg(f, master=parent)
+    axes = f.add_subplot(111)
+
+    x_data = equation.dataCache.allDataCacheDictionary['IndependentData'][0]
+    y_data = equation.dataCache.allDataCacheDictionary['IndependentData'][1]
+    z_data = equation.dataCache.allDataCacheDictionary['DependentData']
+            
+    xModel = numpy.linspace(min(x_data), max(x_data), 20)
+    yModel = numpy.linspace(min(y_data), max(y_data), 20)
+    X, Y = numpy.meshgrid(xModel, yModel)
+        
+    tempcache = equation.dataCache # store the data cache
+    equation.dataCache = pyeq3.dataCache()
+    equation.dataCache.allDataCacheDictionary['IndependentData'] = numpy.array([X, Y])
+    equation.dataCache.FindOrCreateAllDataCache(equation)
+    Z = equation.CalculateModelPredictions(equation.solvedCoefficients, equation.dataCache.allDataCacheDictionary)
+    equation.dataCache = tempcache # restore the original data cache
+        
+    axes.plot(x_data, y_data, 'o')
+
+    axes.set_title('Contour Plot') # add a title for contour plot
+    axes.set_xlabel('X Data') # X axis data label
+    axes.set_ylabel('Y Data') # Y axis data label
+    
+    CS = matplotlib.pyplot.contour(X, Y, Z, numberOfContourLines, colors='k')
+    matplotlib.pyplot.clabel(CS, inline=1, fontsize=10) # labels for contours
+
     canvas.show()
     return canvas.get_tk_widget()
