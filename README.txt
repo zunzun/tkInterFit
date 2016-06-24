@@ -28,7 +28,7 @@ Step 3: Run the tkInterFit example
 
 From a command prompt run this command:
 
-python3 FittingInterface.py
+python3 tkInterFit.py
 
 
 
