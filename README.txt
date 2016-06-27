@@ -4,6 +4,10 @@ using tkinter and the pyeq3 fitting library.
 see http://commonproblems.readthedocs.io/en/latest/
 
 
+If you prefer wxPython, the wxPython version of this code
+is at: https://github.com/zunzun/wxPythonFit
+
+
 Step 1: Install Python 3, tk, scipy and matplotlib
 
 On Debian or Ubuntu Linux, you can use this command:
