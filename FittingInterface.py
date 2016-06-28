@@ -10,6 +10,7 @@ import tkinter.scrolledtext as tk_stxt
 import DataForControls as dfc
 import FittingThread
 
+
 class InterfaceFrame(tk.Frame):
     
     def __init__(self, parent):
@@ -42,7 +43,6 @@ class InterfaceFrame(tk.Frame):
         row, col = (1, 3)
         l = tk.Label(self, text="--- 3D Data Text Editor ---", font="-weight bold")
         l.grid(column=col, row=row)
-
 
         # ROW 2 - text data input, no line wrap
         row, col = (2, 1)
@@ -187,7 +187,7 @@ class InterfaceFrame(tk.Frame):
         self.buttonFit_2D.config(state=tk.DISABLED)
         self.buttonFit_3D.config(state=tk.DISABLED)
         
-        # create simple topl-level text dialog to display status as fitting progresses
+        # create simple top-level text dialog to display status as fitting progresses
         # when the fitting thread completes, it will close the status box
         self.statusBox = tk.Toplevel()
         self.statusBox.title("Fitting Status")
@@ -248,7 +248,7 @@ class InterfaceFrame(tk.Frame):
         self.buttonFit_2D.config(state=tk.DISABLED)
         self.buttonFit_3D.config(state=tk.DISABLED)
         
-        # create simple topl-level text dialog to display status as fitting progresses
+        # create simple top-level text dialog to display status as fitting progresses
         # when the fitting thread completes, it will close the status box
         self.statusBox = tk.Toplevel()
         self.statusBox.title("Fitting Status")
