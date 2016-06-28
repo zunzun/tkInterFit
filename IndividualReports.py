@@ -200,6 +200,8 @@ def AbsoluteErrorGraph(parent, equation):
     axes.set_ylabel(" Absolute Error") # Y axis label is always absolute error
 
     canvas.show()
+    plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
+    
     return canvas.get_tk_widget()
 
 
@@ -221,6 +223,7 @@ def PercentErrorGraph(parent, equation):
     axes.set_ylabel(" Percent Error") # Y axis label is always percent error
 
     canvas.show()
+    plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
     return canvas.get_tk_widget()
 
 
@@ -246,6 +249,7 @@ def AbsoluteErrorHistogram(parent, equation):
     axes.set_ylabel(" Frequency") # Y axis label is frequency
 
     canvas.show()
+    plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
     return canvas.get_tk_widget()
 
 
@@ -271,6 +275,7 @@ def PercentErrorHistogram(parent, equation):
     axes.set_ylabel(" Frequency") # Y axis label is frequency
 
     canvas.show()
+    plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
     return canvas.get_tk_widget()
 
 
@@ -327,6 +332,7 @@ def ModelScatterConfidenceGraph(parent, equation):
     axes.set_ylabel('Y Data') # Y axis data label
 
     canvas.show()
+    plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
     return canvas.get_tk_widget()
 
 
@@ -361,6 +367,7 @@ def SurfacePlot(parent, equation):
     axes.set_zlabel('Z Data') # Z axis data label
 
     canvas.show()
+    plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
     return canvas.get_tk_widget()
 
 
@@ -394,6 +401,7 @@ def ContourPlot(parent, equation):
     matplotlib.pyplot.clabel(CS, inline=1, fontsize=10) # labels for contours
 
     canvas.show()
+    plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
     return canvas.get_tk_widget()
 
 
@@ -415,4 +423,5 @@ def ScatterPlot(parent, equation):
     axes.set_zlabel('Z Data')
 
     canvas.show()
+    plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
     return canvas.get_tk_widget()
