@@ -19,7 +19,7 @@ exampleText_3D = """\
 Example 3D data for testing
 Paste your own 3D data here
 
-    X        Y          Z
+    X       Y      Z
   3.017  2.175   0.0320
   2.822  2.624   0.0629
   1.784  3.144   6.570
