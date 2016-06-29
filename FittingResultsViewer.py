@@ -7,7 +7,7 @@ from tkinter import messagebox as tk_mbox
 import tkinter.scrolledtext as tk_stxt
 
 import IndividualReports
-
+import AdditionalInfo
 
 class ResultsFrame(tk.Frame):
     
@@ -106,6 +106,23 @@ class ResultsFrame(tk.Frame):
     
         report = IndividualReports.SourceCodeReport(nbSourceCodeReports, equation,'FORTRAN90')
         nbSourceCodeReports.add(report, text="FORTRAN90")
+
+        # the "additional information" notebook tab
+        nbAdditionalInfo = ttk.Notebook(topLevelNotebook)
+        nbAdditionalInfo.pack()
+        topLevelNotebook.add(nbAdditionalInfo, text='Additional Information')
+                
+        scrolledText = tk_stxt.ScrolledText(nbAdditionalInfo, width=IndividualReports.textboxWidth, height=IndividualReports.textboxHeight, wrap=tk.WORD)
+        nbAdditionalInfo.add(scrolledText, text="Fitting History")
+        scrolledText.insert(tk.END, AdditionalInfo.history)
+
+        scrolledText = tk_stxt.ScrolledText(nbAdditionalInfo, width=IndividualReports.textboxWidth, height=IndividualReports.textboxHeight, wrap=tk.WORD)
+        nbAdditionalInfo.add(scrolledText, text="Author History")
+        scrolledText.insert(tk.END, AdditionalInfo.author)
+
+        scrolledText = tk_stxt.ScrolledText(nbAdditionalInfo, width=IndividualReports.textboxWidth, height=IndividualReports.textboxHeight, wrap=tk.WORD)
+        nbAdditionalInfo.add(scrolledText, text="Web Links")
+        scrolledText.insert(tk.END, AdditionalInfo.links)
 
 
 
