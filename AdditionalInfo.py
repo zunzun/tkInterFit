@@ -2,7 +2,7 @@ links = '''
 URL for animated "Common Problems In Curve Fitting":
 http://commonproblems.readthedocs.io/
 
-URL for source code for this computer program:
+URL for source code of this computer program:
 https://github.com/zunzun/tkInterFit
 
 URL for web version of this code, which generates \
