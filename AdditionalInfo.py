@@ -40,7 +40,7 @@ small changes in alloy composition lead to large changes in X-ray \
 transmission for the same thickness. Alloy changes look like thickness \
 changes, egad! However, alloy changes also cause changes to the X-rays \
 that are scattered back from the aluminium, so that if both the transmitted \
-and backscattered radiation is measured a more alloy-insensitive tickness \
+and backscattered radiation is measured a more alloy-insensitive thickness \
 measurement can be made - but this is now a 3D surface fit, and I started \
 writing surface fitting software. I began to do considerable international work.
 
