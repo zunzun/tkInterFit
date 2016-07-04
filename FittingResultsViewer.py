@@ -9,6 +9,7 @@ import tkinter.scrolledtext as tk_stxt
 import IndividualReports
 import AdditionalInfo
 
+
 class ResultsFrame(tk.Frame):
     
     def __init__(self, parent, pickledEquationFileName):
@@ -123,6 +124,12 @@ class ResultsFrame(tk.Frame):
         scrolledText = tk_stxt.ScrolledText(nbAdditionalInfo, width=IndividualReports.textboxWidth, height=IndividualReports.textboxHeight, wrap=tk.WORD)
         nbAdditionalInfo.add(scrolledText, text="Web Links")
         scrolledText.insert(tk.END, AdditionalInfo.links)
+
+        # the "list of all standard equations" notebook tab
+        dim = equation.GetDimensionality()
+        allEquations = IndividualReports.AllEquationReport(topLevelNotebook, dim)
+        allEquations.pack()
+        topLevelNotebook.add(allEquations, text="List Of All Standard " + str(dim) + "D Equations")
 
 
 

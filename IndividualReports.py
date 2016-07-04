@@ -1,4 +1,4 @@
-import pickle
+import pickle, inspect, re
 import pyeq3
 import numpy, scipy
 
@@ -14,6 +14,7 @@ import tkinter as tk
 from tkinter import ttk as ttk
 from tkinter import messagebox as tk_mbox
 import tkinter.scrolledtext as tk_stxt
+import XYscrolledtext as xy_stxt
 
 
 textboxWidth = 60 # units are characters
@@ -425,3 +426,91 @@ def ScatterPlot(parent, equation):
     canvas.show()
     plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
     return canvas.get_tk_widget()
+
+
+def AllEquationReport(parent, dim):
+    xyscrolledText = xy_stxt.XYScrolledText(parent, width=textboxWidth, height=textboxHeight, wrap=tk.NONE)
+    xyscrolledText.tag_configure("sup", offset=5) # superscript is +5 pixels
+    xyscrolledText.tag_configure("sub", offset=-5) # subscript is -5 pixels
+    
+    if dim == 2:
+        module = pyeq3.Models_2D
+    else:
+        module = pyeq3.Models_3D
+     
+    for submodule in inspect.getmembers(module):
+        if inspect.ismodule(submodule[1]):
+            for equationClass in inspect.getmembers(submodule[1]):
+                if inspect.isclass(equationClass[1]):
+                    for extendedVersionName in ['Default', 'Offset']:
+                        
+                        # if the equation *already* has an offset,
+                        # do not add an offset version here
+                        if (-1 != extendedVersionName.find('Offset')) and (equationClass[1].autoGenerateOffsetForm == False):
+                            continue
+
+                        equation = equationClass[1]('SSQABS', extendedVersionName)
+
+                        equationName = equation.GetDisplayName()
+                        moduleName = str(dim) + 'D ' + submodule[0]
+                        
+                        xyscrolledText.insert(tk.END, moduleName)
+                        xyscrolledText.insert(tk.END, '   ')
+                        xyscrolledText.insert(tk.END, equationName)
+                        xyscrolledText.insert(tk.END, '   ')
+
+                        html = equation.GetDisplayHTML()
+                        
+                        # html <br> tags become new line characters
+                        html = html.replace('<br>', '\n')
+                        
+                        # display pyeq3's html superscript and subscript tags
+                        # tkinter has no native HTML widget, and pyeq3's html os
+                        # simple and has no *nested* HTML tags - no recursion needed
+                        findIter = re.finditer(r'<su.>|</su.>', html)
+                        currentIndex = 0
+                        endingIndex = len(html)
+                        itemCount = 0
+                        for item in findIter:
+                            span = item.span()
+                            if not itemCount % 2: # text is *not* within HTML tags
+                                t = html[currentIndex:span[0]]
+                                xyscrolledText.insert(tk.END, t)
+                                currentIndex = span[1] # beginning tag
+                            else: # text *is* within html tags
+                                if html[span[1]-2] == 'b': # subscript tag
+                                    tag = 'sub'
+                                else: # html superscript tag
+                                    tag = 'sup'
+                                t = html[currentIndex:span[1]-6]
+                                xyscrolledText.insert(tk.END, t, tag)
+                                currentIndex = span[1] # ending tag
+                            itemCount += 1
+
+                        # any ending text, or if no tags were found
+                        if currentIndex < endingIndex:
+                            t = html[currentIndex:endingIndex]
+                            xyscrolledText.insert(tk.END, t)
+                            
+                        xyscrolledText.insert(tk.END, '\n')
+                        
+    return xyscrolledText
+
+
+
+if __name__ == "__main__":
+    import FittingResultsViewer
+    root = tk.Tk()
+    interface = FittingResultsViewer.ResultsFrame(root, 'pickledEquationFile')
+    interface.pack()
+    root.title("Example tkinterFit -  Fitting Results Viewer")
+    
+    # manually center the application window on the user display
+    root.update_idletasks()
+    width = root.winfo_width()
+    height = root.winfo_height()
+    x = (root.winfo_screenwidth() // 2) - (width // 2) # integer division
+    y = (root.winfo_screenheight() // 2) - (height // 2) # integer division
+    root.geometry('{}x{}+{}+{}'.format(width, height, x, y))        
+        
+    root.mainloop()
