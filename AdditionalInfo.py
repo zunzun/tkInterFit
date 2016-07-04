@@ -89,10 +89,12 @@ choosing the one in the code, a genetic algorithm named \
 
 
 I hope you find this code useful, and to that end I have sprinkled \
-explanatory comments throughout the code.  If you have any questions \
-or comments, please e-mail me directly at zunzun@zunzun.com \
+explanatory comments throughout the code.  If you have any questions, \
+comments or ridicule, please e-mail me directly at zunzun@zunzun.com \
 or by posting to the user group at the URL
 https://groups.google.com/forum/#!forum/zunzun_dot_com
+
+I will be glad to help you.
 
 James R. Phillips
 2548 Vera Cruz Drive
