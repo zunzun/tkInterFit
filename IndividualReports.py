@@ -432,6 +432,8 @@ def AllEquationReport(parent, dim):
     xyscrolledText = xy_stxt.XYScrolledText(parent, width=textboxWidth, height=textboxHeight, wrap=tk.NONE)
     xyscrolledText.tag_configure("sup", offset=5) # superscript is +5 pixels
     xyscrolledText.tag_configure("sub", offset=-5) # subscript is -5 pixels
+    xyscrolledText.tag_configure("bold", font='-weight bold')
+    xyscrolledText.tag_configure("italic", font='-slant italic')
     
     if dim == 2:
         module = pyeq3.Models_2D
@@ -454,9 +456,9 @@ def AllEquationReport(parent, dim):
                         equationName = equation.GetDisplayName()
                         moduleName = str(dim) + 'D ' + submodule[0]
                         
-                        xyscrolledText.insert(tk.END, moduleName)
+                        xyscrolledText.insert(tk.END, moduleName, 'bold')
                         xyscrolledText.insert(tk.END, '   ')
-                        xyscrolledText.insert(tk.END, equationName)
+                        xyscrolledText.insert(tk.END, equationName, 'italic')
                         xyscrolledText.insert(tk.END, '   ')
 
                         html = equation.GetDisplayHTML()
