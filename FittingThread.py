@@ -42,6 +42,6 @@ class FittingThread(threading.Thread):
         time.sleep(0.5) # allow users a moment to see the update
         
         # the fitted equation is now the queue's event data, rather than
-        # a status update string.  The vent handler checks the data type
+        # a status update string.  The event handler checks the data type
         self.notify_window.queue.put(self.equation)
         self.notify_window.event_generate('<<status_update>>')
