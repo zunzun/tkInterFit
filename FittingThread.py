@@ -1,6 +1,3 @@
-
-# see the included wxThreadExample.py file
-
 import os, sys, time, threading
 
 import pyeq3
