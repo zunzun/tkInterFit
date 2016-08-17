@@ -1,3 +1,5 @@
+import collections
+
 exampleText_2D = """\
 
 Example 2D data for testing
@@ -42,20 +44,23 @@ fittingTargetList = ['Lowest Sum Of Squared Absolute Error (SSQABS)',
                      'Lowest Akaike Information Criterion (AIC)',
                      ]
 
-exampleEquationList_2D = ['Linear Polynomial',
-                          'Quadratic Polynomial',
-                          'Cubic Polynomial',
-                          'Witch Of Maria Agnesi A',
-                          'VanDeemter Chromatography',
-                          'Gamma Ray Angular Distribution (degrees) B',
-                          'Exponential With Offset',
-                          ]
+# item[display string] = [code name string, extended version name string, additional parameters string]
+eq_od2D = collections.OrderedDict()
+eq_od2D['Linear Polynomial'] = ['Polynomial.Linear', 'Default', '', '']
+eq_od2D['Quadratic Polynomial'] = ['Polynomial.Quadratic', 'Default', '', '']
+eq_od2D['Cubic Polynomial'] = ['Polynomial.Cubic', 'Default', '', '']
+eq_od2D['Witch Of Maria Agnesi A'] = ['Miscellaneous.WitchOfAgnesiA', 'Default', '', '']
+eq_od2D['VanDeemter Chromatography'] = ['Engineering.VanDeemterChromatography', 'Default', '', '']
+eq_od2D['Gamma Ray Angular Distribution (degrees) B'] = ['LegendrePolynomial.GammaRayAngularDistributionDegreesB', 'Default', '', '']
+eq_od2D['Exponential With Offset'] = ['Exponential.Exponential', 'Offset', '', ''] # NOT empty extended version string
 
-exampleEquationList_3D = ['Linear Polynomial',
-                          'Full Quadratic Polynomial',
-                          'Full Cubic Polynomial',
-                          'Monkey Saddle A',
-                          'Gaussian Curvature Of Whitneys Umbrella A',
-                          'NIST Nelson Autolog',
-                          'Custom Polynomial One',
-                          ]
+# item[display string] = [code name string, extended version name string, additional parameters string]
+eq_od3D = collections.OrderedDict()
+eq_od3D['Linear Polynomial'] = ['Polynomial.Linear', 'Default', '', '']
+eq_od3D['Full Quadratic Polynomial'] = ['Polynomial.FullQuadratic', 'Default', '', '']
+eq_od3D['Full Cubic Polynomial'] = ['Polynomial.FullCubic', 'Default', '']
+eq_od3D['Monkey Saddle A'] = ['Miscellaneous.MonkeySaddleA', 'Default', '', '']
+eq_od3D['Gaussian Curvature Of Whitneys Umbrella A'] = ['Miscellaneous.GaussianCurvatureOfWhitneysUmbrellaA', '']
+eq_od3D['NIST Nelson Autolog'] = ['NIST.NIST_NelsonAutolog', 'Default', '', '']
+eq_od3D['Custom Polynomial One'] = ['Polynomial.UserSelectablePolynomial', 'Default', ', 3, 1']
+
