@@ -262,11 +262,8 @@ class InterfaceFrame(tk.Frame):
             pickledEquationFile.close()
     
             # view fitting results
-            # allow multiple result windows to open for comparisons
-            os.popen(sys.executable + ' FittingResultsViewer.py')
-            
-            # give the system a few seconds to start the reporting application
-            time.sleep(5.0)
+            p = os.popen(sys.executable + ' FittingResultsViewer.py')
+            p.close()
 
             # re-enable fitting buttons
             self.buttonFit_2D.config(state=tk.NORMAL)
