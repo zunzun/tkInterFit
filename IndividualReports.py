@@ -203,7 +203,7 @@ def AbsoluteErrorGraph(parent, equation):
     canvas.show()
     plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
     
-    return canvas.get_tk_widget()
+    return [canvas.get_tk_widget(), f]
 
 
 def PercentErrorGraph(parent, equation):
@@ -225,7 +225,7 @@ def PercentErrorGraph(parent, equation):
 
     canvas.show()
     plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
-    return canvas.get_tk_widget()
+    return [canvas.get_tk_widget(), f]
 
 
 def AbsoluteErrorHistogram(parent, equation):
@@ -251,7 +251,7 @@ def AbsoluteErrorHistogram(parent, equation):
 
     canvas.show()
     plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
-    return canvas.get_tk_widget()
+    return [canvas.get_tk_widget(), f]
 
 
 def PercentErrorHistogram(parent, equation):
@@ -277,7 +277,7 @@ def PercentErrorHistogram(parent, equation):
 
     canvas.show()
     plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
-    return canvas.get_tk_widget()
+    return [canvas.get_tk_widget(), f]
 
 
 def ModelScatterConfidenceGraph(parent, equation):
@@ -334,7 +334,7 @@ def ModelScatterConfidenceGraph(parent, equation):
 
     canvas.show()
     plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
-    return canvas.get_tk_widget()
+    return [canvas.get_tk_widget(), f]
 
 
 def SurfacePlot(parent, equation):
@@ -369,7 +369,7 @@ def SurfacePlot(parent, equation):
 
     canvas.show()
     plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
-    return canvas.get_tk_widget()
+    return [canvas.get_tk_widget(), f]
 
 
 def ContourPlot(parent, equation):
@@ -403,7 +403,7 @@ def ContourPlot(parent, equation):
 
     canvas.show()
     plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
-    return canvas.get_tk_widget()
+    return [canvas.get_tk_widget(), f]
 
 
 def ScatterPlot(parent, equation):
@@ -425,7 +425,7 @@ def ScatterPlot(parent, equation):
 
     canvas.show()
     plt.close('all') # clean up after using pyplot or else thaere can be memory and process problems
-    return canvas.get_tk_widget()
+    return [canvas.get_tk_widget(), f]
 
 
 def AllEquationReport(parent, dim):
