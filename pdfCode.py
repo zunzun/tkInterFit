@@ -1,4 +1,4 @@
-import time
+import time, os, glob
 import reportlab
 import reportlab.platypus
 from reportlab.pdfgen import canvas
@@ -28,7 +28,8 @@ class NumberedCanvas(canvas.Canvas):
     def draw_page_number(self, page_count):
         self.setFont("Helvetica", 7)
         self.drawRightString(200*mm, 20*mm, "Page %d of %d" % (self._pageNumber, page_count))
-        self.drawCentredString(25*mm, 20*mm, 'https://github.com/zunzun/zunzunsite3')
+        self.drawCentredString(25*mm, 20*mm, 'https://github.com/zunzun/tkInterFit')
+
 
 
 def CreatePDF(inFileAndPathName, inEquation, inGraphList, inTextList, inSourceCodeList):
@@ -42,7 +43,7 @@ def CreatePDF(inFileAndPathName, inEquation, inGraphList, inTextList, inSourceCo
     myTableStyle = [('ALIGN', (1,1), (-1,-1), 'CENTER'),
                     ('VALIGN', (1,1), (-1,-1), 'MIDDLE')]
 
-    tableRow = ['ZunZunSite3'] # originally included images that are now unused
+    tableRow = ['tkInterFit'] # originally included images that are now unused
 
     table = reportlab.platypus.Table([tableRow], style=myTableStyle)
 
@@ -53,34 +54,27 @@ def CreatePDF(inFileAndPathName, inEquation, inGraphList, inTextList, inSourceCo
     pageElements.append(reportlab.platypus.Paragraph(inEquation.GetDisplayName(), styles['CenteredBodyText']))
     pageElements.append(reportlab.platypus.XPreformatted('<br/><br/>', styles['CenteredBodyText']))
 
-    #titleXML = self.pdfTitleHTML.replace('sup>', 'super>').replace('SUP>', 'super>').replace('<br>', '<br/>').replace('<BR>', '<br/>')
-    #pageElements.append(reportlab.platypus.Paragraph(titleXML, styles['CenteredBodyText']))
-
     pageElements.append(reportlab.platypus.XPreformatted('<br/><br/>', styles['CenteredBodyText']))
-    pageElements.append(reportlab.platypus.Paragraph(time.asctime(time.localtime()) + ' local server time', styles['CenteredBodyText']))
+    pageElements.append(reportlab.platypus.Paragraph("Created " + time.asctime(time.localtime()), styles['CenteredBodyText']))
 
     pageElements.append(reportlab.platypus.PageBreak())
 
-    # convert HTML tags to reportlab-specific tags
-    '''
-    titleXML = pdfTitleHTML.replace('sup>', 'super>').replace('SUP>', 'super>').replace('<br>', '<br/>').replace('<BR>', '<br/>')
-    pageElements.append(reportlab.platypus.Paragraph(titleXML, styles['CenteredBodyText']))
-
-    pageElements.append(reportlab.platypus.XPreformatted('<br/><br/>', styles['CenteredBodyText']))
-    pageElements.append(reportlab.platypus.Paragraph(time.asctime(time.localtime()) + ' local time', styles['CenteredBodyText']))
-    '''
-
     # make a page for each report output, with report name as page header
-    tempImageFileName = 'temp.png'
+    filenamePrefix = 'temp_'
+    index = 1
     for report in inGraphList:
-        pageElements.append(reportlab.platypus.Paragraph(report[1], styles['CenteredBodyText']))
         pageElements.append(reportlab.platypus.XPreformatted('<br/><br/>', styles['CenteredBodyText']))
         
-        # could not get io.BytesIO and ImageReader to work, use file instead
-        report[0].savefig(tempImageFileName, format='png')
-        im = reportlab.platypus.Image(tempImageFileName)
+        # I could not get io.BytesIO and ImageReader to work, using files instead
+        # each image file name must be unique for reportlab's use - delete when done
+        fname = filenamePrefix + str(index) + '.png'
+        report[0].savefig(fname, format='png')
+        im = reportlab.platypus.Image(fname)
+        im._restrictSize(600, 600) # if image is too large for one page
         im.hAlign = 'CENTER'
         pageElements.append(im)
+        
+        index += 1
 
         pageElements.append(reportlab.platypus.PageBreak())
     
@@ -88,7 +82,7 @@ def CreatePDF(inFileAndPathName, inEquation, inGraphList, inTextList, inSourceCo
         pageElements.append(reportlab.platypus.Preformatted(report[1], styles['SmallCode']))
         pageElements.append(reportlab.platypus.XPreformatted('<br/><br/><br/>', styles['CenteredBodyText']))
 
-        replacedText = report[1]
+        replacedText = report[0]
         
         if -1 != report[1].find('Coefficients'):
             reportText = reportText.replace('<sup>', '^')
@@ -146,3 +140,7 @@ def CreatePDF(inFileAndPathName, inEquation, inGraphList, inTextList, inSourceCo
         
     doc = reportlab.platypus.SimpleDocTemplate(inFileAndPathName, pagesize=reportlab.lib.pagesizes.letter)
     doc.build(pageElements, canvasmaker=NumberedCanvas)
+
+    # Done, now delete the temporary image files
+    for fname in glob.glob(filenamePrefix + "*.png"):
+        os.remove(fname)
