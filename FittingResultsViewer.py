@@ -191,7 +191,8 @@ class ResultsFrame(tk.Frame):
         buttonSavePDF = tk.Button(fsaveFrame, text="Save To PDF", command=self.createPDF, height=0, width=0)
         buttonSavePDF.pack()
         topLevelNotebook.add(fsaveFrame, text="Save To PDF File")
-            
+
+
     def createPDF(self):
         try:
             import reportlab
@@ -202,7 +203,7 @@ class ResultsFrame(tk.Frame):
         # see https://bugs.python.org/issue22810 for the
         # "alloc: invalid block" error on application close 
         fName = filedialog.asksaveasfilename(
-                                filetypes =(("PF Files", "*.pdf"),("All Files","*.*")),
+                                filetypes =(("PDF Files", "*.pdf"),("All Files","*.*")),
                                 title = "PDF file name"
                                 )
         if fName:
