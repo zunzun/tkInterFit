@@ -50,7 +50,7 @@ eq_od2D['Linear Polynomial'] = ['Polynomial.Linear', 'Default', '', '']
 eq_od2D['Quadratic Polynomial'] = ['Polynomial.Quadratic', 'Default', '', '']
 eq_od2D['Cubic Polynomial'] = ['Polynomial.Cubic', 'Default', '', '']
 eq_od2D['Witch Of Maria Agnesi A'] = ['Miscellaneous.WitchOfAgnesiA', 'Default', '', '']
-eq_od2D['VanDeemter Chromatography'] = ['Engineering.VanDeemterChromatography', 'Default', '', '']
+eq_od2D['Lorentzian Peak C With Offset'] = ['Peak.LorentzianPeakC', 'Offset', '', '']
 eq_od2D['Gamma Ray Angular Distribution (degrees) B'] = ['LegendrePolynomial.GammaRayAngularDistributionDegreesB', 'Default', '', '']
 eq_od2D['Exponential With Offset'] = ['Exponential.Exponential', 'Offset', '', ''] # NOT default extended version string
 
