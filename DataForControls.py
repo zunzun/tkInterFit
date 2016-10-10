@@ -44,23 +44,30 @@ fittingTargetList = ['Lowest Sum Of Squared Absolute Error (SSQABS)',
                      'Lowest Akaike Information Criterion (AIC)',
                      ]
 
-# item[display string] = [code name string, extended version name string, additional parameters string]
 eq_od2D = collections.OrderedDict()
-eq_od2D['Linear Polynomial'] = ['Polynomial.Linear', 'Default', '', '']
-eq_od2D['Quadratic Polynomial'] = ['Polynomial.Quadratic', 'Default', '', '']
+eq_od2D['Linear Polynomial'] = [ # dictionary key is the text to display
+    'Polynomial.Linear', # code string for module.equation
+    'Default', # extended version name string
+    '' # additional parameters string
+]
+eq_od2D['Quadratic Polynomial'] = ['Polynomial.Quadratic', 'Default', '']
 eq_od2D['Cubic Polynomial'] = ['Polynomial.Cubic', 'Default', '', '']
-eq_od2D['Witch Of Maria Agnesi A'] = ['Miscellaneous.WitchOfAgnesiA', 'Default', '', '']
-eq_od2D['Lorentzian Peak C With Offset'] = ['Peak.LorentzianPeakC', 'Offset', '', '']
-eq_od2D['Gamma Ray Angular Distribution (degrees) B'] = ['LegendrePolynomial.GammaRayAngularDistributionDegreesB', 'Default', '', '']
-eq_od2D['Exponential With Offset'] = ['Exponential.Exponential', 'Offset', '', ''] # NOT default extended version string
+eq_od2D['Witch Of Maria Agnesi A'] = ['Miscellaneous.WitchOfAgnesiA', 'Default', '']
+eq_od2D['Lorentzian Peak C With Offset'] = ['Peak.LorentzianPeakC', 'Offset', '']
+eq_od2D['Gamma Ray Angular Distribution (degrees) B'] = ['LegendrePolynomial.GammaRayAngularDistributionDegreesB', 'Default', '']
+eq_od2D['Exponential With Offset'] = ['Exponential.Exponential', 'Offset', ''] # NOT default extended version string
 
-# item[display string] = [code name string, extended version name string, additional parameters string]
+
 eq_od3D = collections.OrderedDict()
-eq_od3D['Linear Polynomial'] = ['Polynomial.Linear', 'Default', '', '']
-eq_od3D['Full Quadratic Polynomial'] = ['Polynomial.FullQuadratic', 'Default', '', '']
+eq_od3D['Linear Polynomial'] = [ # dictionary key is the text to display
+    'Polynomial.Linear', # code string for module.equation
+    'Default', # extended version name string
+    '' # additional parameters string
+]
+eq_od3D['Full Quadratic Polynomial'] = ['Polynomial.FullQuadratic', 'Default', '']
 eq_od3D['Full Cubic Polynomial'] = ['Polynomial.FullCubic', 'Default', '']
-eq_od3D['Monkey Saddle A With Offset'] = ['Miscellaneous.MonkeySaddleA', 'Offset', '', ''] # NOT default extended version string
-eq_od3D['Gaussian Curvature Of Whitneys Umbrella A'] = ['Miscellaneous.GaussianCurvatureOfWhitneysUmbrellaA', '', '']
-eq_od3D['NIST Nelson Autolog'] = ['NIST.NIST_NelsonAutolog', 'Default', '', '']
-eq_od3D['Custom Polynomial One'] = ['Polynomial.UserSelectablePolynomial', 'Default', ', 3, 1']
+eq_od3D['Monkey Saddle A With Offset'] = ['Miscellaneous.MonkeySaddleA', 'Offset', ''] # NOT default extended version string
+eq_od3D['Gaussian Curvature Of Whitneys Umbrella A'] = ['Miscellaneous.GaussianCurvatureOfWhitneysUmbrellaA', '']
+eq_od3D['NIST Nelson Autolog'] = ['NIST.NIST_NelsonAutolog', 'Default', '']
+eq_od3D['Custom Polynomial One'] = ['Polynomial.UserSelectablePolynomial', 'Default', ', 3, 1'] # note the leading comma for extra parameters
 
