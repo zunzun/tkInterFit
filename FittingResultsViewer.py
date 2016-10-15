@@ -34,11 +34,15 @@ class ResultsFrame(tk.Frame):
         topLevelNotebook.add(nbGraphReports, text='Graph Reports')
 
         if self.equation.GetDimensionality() == 2:
-            report = IndividualReports.ModelScatterConfidenceGraph(nbGraphReports, self.equation)
+            report = IndividualReports.ModelScatterConfidenceGraph(nbGraphReports, self.equation, scatterplotOnlyFlag=False)
             reportTitle = "Model With 95% Confidence"
             nbGraphReports.add(report[0], text=reportTitle)
             self.graphReportsListForPDF.append([report[1], reportTitle])
 
+            report = IndividualReports.ModelScatterConfidenceGraph(nbGraphReports, self.equation, scatterplotOnlyFlag=True)
+            reportTitle = "Scatter Plot"
+            nbGraphReports.add(report[0], text=reportTitle)
+            self.graphReportsListForPDF.append([report[1], reportTitle])
         else:
             report = IndividualReports.SurfacePlot(nbGraphReports, self.equation)
             reportTitle = "Surface Plot"
