@@ -1,9 +1,10 @@
-import os, sys, queue, pickle, time
+import os, sys, queue, pickle, time, inspect
 import pyeq3
 
 import matplotlib # ensure this dependency imports for later use in fitting results
 
 import tkinter as tk
+import tkinter.ttk
 from tkinter import messagebox as tk_mbox
 import tkinter.scrolledtext as tk_stxt
 
@@ -46,12 +47,12 @@ class InterfaceFrame(tk.Frame):
 
         # ROW 2 - text data input, no line wrap
         row, col = (2, 1)
-        self.text_2D = tk_stxt.ScrolledText(self, width=40, height=12, wrap=tk.NONE)
+        self.text_2D = tk_stxt.ScrolledText(self, width=45, height=12, wrap=tk.NONE)
         self.text_2D.insert(tk.END, dfc.exampleText_2D) # inital text data
         self.text_2D.grid(column=col, row=row, sticky=(tk.N, tk.W, tk.E, tk.S))
 
         row, col = (2, 3)
-        self.text_3D = tk_stxt.ScrolledText(self, width=40, height=12, wrap=tk.NONE)
+        self.text_3D = tk_stxt.ScrolledText(self, width=45, height=12, wrap=tk.NONE)
         self.text_3D.insert(tk.END, dfc.exampleText_3D) # inital text data
         self.text_3D.grid(column=col, row=row, sticky=(tk.N, tk.W, tk.E, tk.S))
 
@@ -63,36 +64,51 @@ class InterfaceFrame(tk.Frame):
         # ROW 4 - equation selection labels
         # no "self" needed as no later references exist
         row, col = (4, 1)
-        l = tk.Label(self, text="--- Example 2D Equations ---", font="-weight bold")
+        l = tk.Label(self, text="--- Standard 2D Equations ---", font="-weight bold")
         l.grid(column=col, row=row)
         
         row, col = (4, 3)
-        l = tk.Label(self, text="--- Example 3D Equations ---", font="-weight bold")
+        l = tk.Label(self, text="--- Standard 3D Equations ---", font="-weight bold")
         l.grid(column=col, row=row)
 
-        # ROW 5 - equation selection radio buttons
+        # ROW 5 - equation selection
         row, col = (5, 1)
         f = tk.Frame(self)
-        f.grid(column=col, row=row)        
-        index=0
-        for exampleEquationText in dfc.eq_od2D.keys():
-            rb = tk.Radiobutton(f, text=exampleEquationText, variable=self.equationSelect_2D, value=index)
-            rb.pack(anchor=tk.W)
-            index += 1
+        f.grid(column=col, row=row)
+        self.cb_Modules2D = tk.ttk.Combobox(f, state='readonly')
+        moduleNameList = list(dfc.eq_od2D.keys())
+        moduleNameList.remove('Rational') # has no 2D equations used here
+        self.cb_Modules2D['values'] = moduleNameList
+        self.cb_Modules2D.bind("<<ComboboxSelected>>", self.moduleSelectChanged_2D)
+        self.cb_Modules2D.set('Polynomial')
+        self.cb_Modules2D.pack(anchor=tk.W)
+
+        self.cb_Equations2D = tk.ttk.Combobox(f, state='readonly')
+        self.cb_Equations2D['width'] = 50
+        self.cb_Equations2D['values'] = self.GetEquationListForModule(2, 'Polynomial')
+        self.cb_Equations2D.set('1st Order (Linear)')
+        self.cb_Equations2D.pack(anchor=tk.W)
 
         row, col = (5, 3)
         f = tk.Frame(self)
         f.grid(column=col, row=row)        
-        index=0
-        for exampleEquationText in dfc.eq_od3D.keys():
-            rb = tk.Radiobutton(f, text=exampleEquationText, variable=self.equationSelect_3D, value=index)
-            rb.pack(anchor=tk.W)
-            index += 1
+        self.cb_Modules3D = tk.ttk.Combobox(f, state='readonly')
+        moduleNameList = list(dfc.eq_od3D.keys())
+        self.cb_Modules3D['values'] = moduleNameList
+        self.cb_Modules3D.bind("<<ComboboxSelected>>", self.moduleSelectChanged_3D)
+        self.cb_Modules3D.set('Polynomial')
+        self.cb_Modules3D.pack(anchor=tk.W)
 
-            # ROW 6 - empty label as visual buffer
-            row, col = (6, 0)
-            l = tk.Label(self, text=" ")
-            l.grid(column=col, row=row)
+        self.cb_Equations3D = tk.ttk.Combobox(f, state='readonly')
+        self.cb_Equations3D['width'] = 50
+        self.cb_Equations3D['values'] = self.GetEquationListForModule(3, 'Polynomial')
+        self.cb_Equations3D.set('Linear')
+        self.cb_Equations3D.pack(anchor=tk.W)
+
+        # ROW 6 - empty label as visual buffer
+        row, col = (6, 0)
+        l = tk.Label(self, text=" ")
+        l.grid(column=col, row=row)
 
         # ROW 7 - fitting target selection labels
         # no "self" needed as no later references exist
@@ -146,16 +162,60 @@ class InterfaceFrame(tk.Frame):
         self.bind('<<status_update>>', self.StatusUpdateHandler)
 
 
+    def GetEquationListForModule(self, inDimension, inModuleName):
+        strModule = 'pyeq3.Models_' + str(inDimension) + 'D.' + inModuleName
+        moduleMembers = inspect.getmembers(eval(strModule))
+        returnList = []
+        for equationClass in moduleMembers:
+            if inspect.isclass(equationClass[1]):
+                for extendedVersionName in ['Default', 'Offset']:
+                    
+                    # if the equation *already* has an offset,
+                    # do not add an offset version here
+                    if (-1 != extendedVersionName.find('Offset')) and (equationClass[1].autoGenerateOffsetForm == False):
+                        continue
+                        
+                    # in this application, exclude equation than need extra input
+                    if equationClass[1].splineFlag or \
+                            equationClass[1].userSelectablePolynomialFlag or \
+                            equationClass[1].userCustomizablePolynomialFlag or \
+                            equationClass[1].userSelectablePolyfunctionalFlag or \
+                            equationClass[1].userSelectableRationalFlag or \
+                            equationClass[1].userDefinedFunctionFlag:
+                        continue
+
+                    equation = equationClass[1]('SSQABS', extendedVersionName)
+
+                    returnList.append(equation.GetDisplayName())
+
+        returnList.sort()
+        return returnList
+
+
+    def moduleSelectChanged_2D(self, event):
+        eqNameList = self.GetEquationListForModule(2, event.widget.get())
+        self.cb_Equations2D['values'] = eqNameList
+        self.cb_Equations2D.current(0)
+
+
+    def moduleSelectChanged_3D(self, event):
+        eqNameList = self.GetEquationListForModule(3, event.widget.get())
+        self.cb_Equations3D['values'] = eqNameList
+        self.cb_Equations3D.current(0)
+
+
     def OnFit_2D(self):
         textData = self.text_2D.get("1.0", tk.END)
-        equationSelection = list(dfc.eq_od2D.keys())[self.equationSelect_2D.get()]
+        moduleSelection = self.cb_Modules2D.get()
+        equationSelection = self.cb_Equations2D.get()
         fittingTargetSelection = dfc.fittingTargetList[self.fittingTargetSelect_2D.get()]
         
         # the GUI's fitting target string contains what we need - extract it
         fittingTarget = fittingTargetSelection.split('(')[1].split(')')[0]
 
-        item = dfc.eq_od2D[equationSelection]
-        eqString = 'pyeq3.Models_2D.' + item[0] + '(fittingTarget, ' + "'" + item[1] + "'" + item[2] + ')'
+        item = dfc.eq_od2D[moduleSelection][equationSelection]
+        eqString = 'pyeq3.Models_2D.' + moduleSelection + '.' + item[0] + "('" + fittingTarget + "','" + item[1] + "')"
+        print(eqString)
         self.equation = eval(eqString)
 
         # convert text to numeric data checking for log of negative numbers, etc.
@@ -198,14 +258,15 @@ class InterfaceFrame(tk.Frame):
 
     def OnFit_3D(self):
         textData = self.text_3D.get("1.0", tk.END)
-        equationSelection = list(dfc.eq_od3D.keys())[self.equationSelect_3D.get()]
+        moduleSelection = self.cb_Modules3D.get()
+        equationSelection = self.cb_Equations3D.get()
         fittingTargetSelection = dfc.fittingTargetList[self.fittingTargetSelect_3D.get()]
         
         # the GUI's fitting target string contains what we need - extract it
         fittingTarget = fittingTargetSelection.split('(')[1].split(')')[0]
 
-        item = dfc.eq_od3D[equationSelection]
-        eqString = 'pyeq3.Models_3D.' + item[0] + '(fittingTarget, ' + "'" + item[1] + "'" + item[2] + ')'
+        item = dfc.eq_od3D[moduleSelection][equationSelection]
+        eqString = 'pyeq3.Models_3D.' + moduleSelection + '.' + item[0] + "('" + fittingTarget + "','" + item[1] + "')"
         self.equation = eval(eqString)
 
         # convert text to numeric data checking for log of negative numbers, etc.
