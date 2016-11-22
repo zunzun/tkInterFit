@@ -215,7 +215,6 @@ class InterfaceFrame(tk.Frame):
 
         item = dfc.eq_od2D[moduleSelection][equationSelection]
         eqString = 'pyeq3.Models_2D.' + moduleSelection + '.' + item[0] + "('" + fittingTarget + "','" + item[1] + "')"
-        print(eqString)
         self.equation = eval(eqString)
 
         # convert text to numeric data checking for log of negative numbers, etc.
