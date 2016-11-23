@@ -46,7 +46,13 @@ fittingTargetList = ['Lowest Sum Of Squared Absolute Error (SSQABS)',
                      ]
 
 # these require additional user input - available in zunzunsite3 but not this project
-excludedModuleNames = [
+excludedModuleNames_2D = [
+    'Polyfunctional',
+    'Rational',
+    'Spline',
+    'UserDefinedFunction',
+]
+excludedModuleNames_3D = [
     'Polyfunctional',
     'Spline',
     'UserDefinedFunction',
@@ -55,7 +61,7 @@ excludedModuleNames = [
 eq_od2D = collections.OrderedDict()
 for submodule in inspect.getmembers(pyeq3.Models_2D):
     if inspect.ismodule(submodule[1]):
-        if submodule[0] in excludedModuleNames:
+        if submodule[0] in excludedModuleNames_2D:
             continue
         eq_od2D[submodule[0]] = collections.OrderedDict()
         for equationClass in inspect.getmembers(submodule[1]):
@@ -80,7 +86,7 @@ for submodule in inspect.getmembers(pyeq3.Models_2D):
 eq_od3D = collections.OrderedDict()
 for submodule in inspect.getmembers(pyeq3.Models_3D):
     if inspect.ismodule(submodule[1]):
-        if submodule[0] in excludedModuleNames:
+        if submodule[0] in excludedModuleNames_3D:
             continue
         eq_od3D[submodule[0]] = collections.OrderedDict()
         for equationClass in inspect.getmembers(submodule[1]):

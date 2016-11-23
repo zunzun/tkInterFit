@@ -77,7 +77,6 @@ class InterfaceFrame(tk.Frame):
         f.grid(column=col, row=row)
         self.cb_Modules2D = tk.ttk.Combobox(f, state='readonly')
         moduleNameList = list(dfc.eq_od2D.keys())
-        moduleNameList.remove('Rational') # has no 2D equations used here
         self.cb_Modules2D['values'] = moduleNameList
         self.cb_Modules2D.bind("<<ComboboxSelected>>", self.moduleSelectChanged_2D)
         self.cb_Modules2D.set('Polynomial')
