@@ -76,14 +76,14 @@ class InterfaceFrame(tk.Frame):
         f = tk.Frame(self)
         f.grid(column=col, row=row)
         self.cb_Modules2D = tk.ttk.Combobox(f, state='readonly')
-        self.cb_Modules2D['values'] = list(dfc.eq_od2D.keys())
+        self.cb_Modules2D['values'] = sorted(list(dfc.eq_od2D.keys()))
         self.cb_Modules2D.bind("<<ComboboxSelected>>", self.moduleSelectChanged_2D)
         self.cb_Modules2D.set('Polynomial')
         self.cb_Modules2D.pack(anchor=tk.W)
 
         self.cb_Equations2D = tk.ttk.Combobox(f, state='readonly')
         self.cb_Equations2D['width'] = 50
-        self.cb_Equations2D['values'] = list(dfc.eq_od2D['Polynomial'].keys())
+        self.cb_Equations2D['values'] = sorted(list(dfc.eq_od2D['Polynomial'].keys()))
         self.cb_Equations2D.set('1st Order (Linear)')
         self.cb_Equations2D.pack(anchor=tk.W)
 
@@ -91,14 +91,14 @@ class InterfaceFrame(tk.Frame):
         f = tk.Frame(self)
         f.grid(column=col, row=row)        
         self.cb_Modules3D = tk.ttk.Combobox(f, state='readonly')
-        self.cb_Modules3D['values'] = list(dfc.eq_od3D.keys())
+        self.cb_Modules3D['values'] = sorted(list(dfc.eq_od3D.keys()))
         self.cb_Modules3D.bind("<<ComboboxSelected>>", self.moduleSelectChanged_3D)
         self.cb_Modules3D.set('Polynomial')
         self.cb_Modules3D.pack(anchor=tk.W)
 
         self.cb_Equations3D = tk.ttk.Combobox(f, state='readonly')
         self.cb_Equations3D['width'] = 50
-        self.cb_Equations3D['values'] = list(dfc.eq_od3D['Polynomial'].keys())
+        self.cb_Equations3D['values'] = sorted(list(dfc.eq_od3D['Polynomial'].keys()))
         self.cb_Equations3D.set('Linear')
         self.cb_Equations3D.pack(anchor=tk.W)
 
@@ -160,12 +160,12 @@ class InterfaceFrame(tk.Frame):
 
 
     def moduleSelectChanged_2D(self, event):
-        self.cb_Equations2D['values'] = list(dfc.eq_od2D[event.widget.get()].keys())
+        self.cb_Equations2D['values'] = sorted(list(dfc.eq_od2D[event.widget.get()].keys()))
         self.cb_Equations2D.current(0)
 
 
     def moduleSelectChanged_3D(self, event):
-        self.cb_Equations3D['values'] = list(dfc.eq_od3D[event.widget.get()].keys())
+        self.cb_Equations3D['values'] = sorted(list(dfc.eq_od3D[event.widget.get()].keys()))
         self.cb_Equations3D.current(0)
 
 
