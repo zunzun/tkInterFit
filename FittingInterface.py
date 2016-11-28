@@ -76,15 +76,14 @@ class InterfaceFrame(tk.Frame):
         f = tk.Frame(self)
         f.grid(column=col, row=row)
         self.cb_Modules2D = tk.ttk.Combobox(f, state='readonly')
-        moduleNameList = list(dfc.eq_od2D.keys())
-        self.cb_Modules2D['values'] = moduleNameList
+        self.cb_Modules2D['values'] = list(dfc.eq_od2D.keys())
         self.cb_Modules2D.bind("<<ComboboxSelected>>", self.moduleSelectChanged_2D)
         self.cb_Modules2D.set('Polynomial')
         self.cb_Modules2D.pack(anchor=tk.W)
 
         self.cb_Equations2D = tk.ttk.Combobox(f, state='readonly')
         self.cb_Equations2D['width'] = 50
-        self.cb_Equations2D['values'] = self.GetEquationListForModule(2, 'Polynomial')
+        self.cb_Equations2D['values'] = list(dfc.eq_od2D['Polynomial'].keys())
         self.cb_Equations2D.set('1st Order (Linear)')
         self.cb_Equations2D.pack(anchor=tk.W)
 
@@ -92,15 +91,14 @@ class InterfaceFrame(tk.Frame):
         f = tk.Frame(self)
         f.grid(column=col, row=row)        
         self.cb_Modules3D = tk.ttk.Combobox(f, state='readonly')
-        moduleNameList = list(dfc.eq_od3D.keys())
-        self.cb_Modules3D['values'] = moduleNameList
+        self.cb_Modules3D['values'] = list(dfc.eq_od3D.keys())
         self.cb_Modules3D.bind("<<ComboboxSelected>>", self.moduleSelectChanged_3D)
         self.cb_Modules3D.set('Polynomial')
         self.cb_Modules3D.pack(anchor=tk.W)
 
         self.cb_Equations3D = tk.ttk.Combobox(f, state='readonly')
         self.cb_Equations3D['width'] = 50
-        self.cb_Equations3D['values'] = self.GetEquationListForModule(3, 'Polynomial')
+        self.cb_Equations3D['values'] = list(dfc.eq_od3D['Polynomial'].keys())
         self.cb_Equations3D.set('Linear')
         self.cb_Equations3D.pack(anchor=tk.W)
 
@@ -161,45 +159,13 @@ class InterfaceFrame(tk.Frame):
         self.bind('<<status_update>>', self.StatusUpdateHandler)
 
 
-    def GetEquationListForModule(self, inDimension, inModuleName):
-        strModule = 'pyeq3.Models_' + str(inDimension) + 'D.' + inModuleName
-        moduleMembers = inspect.getmembers(eval(strModule))
-        returnList = []
-        for equationClass in moduleMembers:
-            if inspect.isclass(equationClass[1]):
-                for extendedVersionName in ['Default', 'Offset']:
-                    
-                    # if the equation *already* has an offset,
-                    # do not add an offset version here
-                    if (-1 != extendedVersionName.find('Offset')) and (equationClass[1].autoGenerateOffsetForm == False):
-                        continue
-                        
-                    # in this application, exclude equation than need extra input
-                    if equationClass[1].splineFlag or \
-                            equationClass[1].userSelectablePolynomialFlag or \
-                            equationClass[1].userCustomizablePolynomialFlag or \
-                            equationClass[1].userSelectablePolyfunctionalFlag or \
-                            equationClass[1].userSelectableRationalFlag or \
-                            equationClass[1].userDefinedFunctionFlag:
-                        continue
-
-                    equation = equationClass[1]('SSQABS', extendedVersionName)
-
-                    returnList.append(equation.GetDisplayName())
-
-        returnList.sort()
-        return returnList
-
-
     def moduleSelectChanged_2D(self, event):
-        eqNameList = self.GetEquationListForModule(2, event.widget.get())
-        self.cb_Equations2D['values'] = eqNameList
+        self.cb_Equations2D['values'] = list(dfc.eq_od2D[event.widget.get()].keys())
         self.cb_Equations2D.current(0)
 
 
     def moduleSelectChanged_3D(self, event):
-        eqNameList = self.GetEquationListForModule(3, event.widget.get())
-        self.cb_Equations3D['values'] = eqNameList
+        self.cb_Equations3D['values'] = list(dfc.eq_od3D[event.widget.get()].keys())
         self.cb_Equations3D.current(0)
 
 
